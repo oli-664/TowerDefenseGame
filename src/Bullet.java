@@ -22,7 +22,7 @@ public class Bullet {
         y -= bulletSpeed;
     }
 
-    public boolean isBounds(int heightOfScreen){
+    public boolean inBounds(int heightOfScreen){
         if(y <= heightOfScreen && y >= 0){
             return true;
         }

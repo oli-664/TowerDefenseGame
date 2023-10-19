@@ -30,8 +30,8 @@ public class Tank {
         return false;
     }
     public boolean checkBulletCollision(Bullet incomingBullet){
-        if((incomingBullet.getX() + incomingBullet.getR()) > this.x || (incomingBullet.getX() - incomingBullet.getR()) < (this.x + this.tankWidth)){
-            if((incomingBullet.getY() + incomingBullet.getR()) > this.y || (incomingBullet.getY() - incomingBullet.getR()) < (this.y + this.tankHeight)){
+        if(((incomingBullet.getX() + incomingBullet.getR()) > this.x) && (incomingBullet.getX() - incomingBullet.getR()) < (this.x + this.tankWidth)){
+            if((incomingBullet.getY() + incomingBullet.getR()) > this.y + this.tankHeight && (incomingBullet.getY() - incomingBullet.getR()) < this.y){
                 return true;
             }
         }

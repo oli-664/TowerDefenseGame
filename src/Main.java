@@ -19,7 +19,7 @@ public class Main extends PApplet {
         //Initialize Towers
         towerArray = new ArrayList<>();
         for (int initializeTowerCounter = 0; initializeTowerCounter < 8; initializeTowerCounter++) {
-            Tower inputTower = new Tower(10 + (initializeTowerCounter * 100), 525, 50,50,5);
+            Tower inputTower = new Tower(10 + (initializeTowerCounter * 100), 525, 50,50,5, 200);
             towerArray.add(inputTower);
         }
         //Initialize Bullets
@@ -34,15 +34,17 @@ public class Main extends PApplet {
         rect(0,300,800, 200);
 
         //Tank Movement
-        for(Tank tank : tankArray){
-            tank.draw(this);
-            if(! tank.inBounds(800)){
-                tankArray.remove(this);
+        for (int loopTanks = 0; loopTanks < tankArray.size(); loopTanks++) {
+            Tank currTank = tankArray.get(loopTanks);
+            currTank.draw(this);
+            if(! currTank.inBounds(800)){
+                tankArray.remove(loopTanks);
             }
+
             //Check Bullet Collision
             for (int loopBullets = 0; loopBullets < bulletArray.size(); loopBullets++) {
-                if(tank.checkBulletCollision(bulletArray.get(loopBullets))){
-                    tankArray.remove(this);
+                if(currTank.checkBulletCollision(bulletArray.get(loopBullets))){
+                    tankArray.remove(loopTanks);
                     bulletArray.remove(loopBullets);
                 }
             }
@@ -50,16 +52,24 @@ public class Main extends PApplet {
 
         //Tower Method
         for(Tower tower : towerArray){
-            tower.draw(this);
-            if (mousePressed) {
-                if (mouseX >= tower.getX() && mouseX <= tower.getX() + tower.getWidth() && mouseY >= tower.getY() && mouseY <= tower.getY() + tower.getHeight()) {
-                    tower.setColor(0,255,0);
-                    Bullet addBullet = tower.shoot();
-                    bulletArray.add(addBullet);
+            //Reloading Code
+            if(tower.checkReload()){
+                if (mousePressed) {
+                    if (mouseX >= tower.getX() && mouseX <= tower.getX() + tower.getWidth() && mouseY >= tower.getY() && mouseY <= tower.getY() + tower.getHeight()) {
+                        tower.setColor(0,255,0);
+                        Bullet addBullet = tower.shoot();
+                        bulletArray.add(addBullet);
+                        //Reset reload counter
+                        tower.setReloadSpeed(0);
+                    }
+                } else{
+                    tower.setColor(255,0,0);
                 }
             } else{
-                tower.setColor(255,0,0);
+                tower.setReloadSpeed(tower.getCurrReload() + 1);
             }
+
+            tower.draw(this);
         }
 
         //Bullet Method
@@ -67,6 +77,9 @@ public class Main extends PApplet {
             Bullet currBullet = bulletArray.get(loopBullets);
             currBullet.draw(this);
             currBullet.move();
+            if(!currBullet.inBounds(800)){
+                bulletArray.remove(loopBullets);
+            }
         }
     }
 
